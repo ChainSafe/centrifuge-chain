@@ -1,6 +1,6 @@
 use sp_core::{Pair, Public, crypto::UncheckedInto, sr25519};
 use node_runtime::{
-	AuthorityDiscoveryConfig, BabeConfig, BalancesConfig, CouncilConfig, DemocracyConfig,
+	AuthorityDiscoveryConfig, BabeConfig, BalancesConfig, BridgeConfig, CouncilConfig, DemocracyConfig,
 	FeesConfig, GrandpaConfig, ImOnlineConfig, MultiAccount, MultiAccountConfig, SessionConfig, SessionKeys,
 	StakerStatus, StakingConfig, SystemConfig, WASM_BINARY,
 };
@@ -231,6 +231,11 @@ pub fn testnet_genesis(
                 2_365_296_803_653,
             )],
         }),
+		bridge: Some(BridgeConfig {
+			endowed: get_account_id_from_seed::<sr25519::Public>("Alice"),
+			relayers: endowed_accounts,
+			relayer_threshold: 2,
+		}),
     }
 }
 

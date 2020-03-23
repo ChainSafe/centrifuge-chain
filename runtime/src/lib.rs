@@ -43,6 +43,8 @@ pub use pallet_timestamp::Call as TimestampCall;
 pub use pallet_balances::Call as BalancesCall;
 pub use pallet_staking::StakerStatus;
 
+pub use chainbridge as bridge;
+
 /// Implementations of some helper traits passed into runtime modules as associated types.
 pub mod impls;
 use impls::{CurrencyToVoteHandler, Author, LinearWeightToFee, TargetedFeeAdjustment};
@@ -516,6 +518,17 @@ impl substrate_pallet_multi_account::Trait for Runtime {
     type MultisigDepositFactor = MultiAccountSigDepositFactor;
 }
 
+impl bridge::Trait for Runtime {
+	type Event = Event;
+	type Currency = Balances;
+	type Proposal = Call;
+}
+
+impl example_pallet::Trait for Runtime {
+	type Event = Event;
+	type BridgeOrigin = chainbridge::EnsureBridge<Runtime>;
+}
+
 construct_runtime!(
 	pub enum Runtime where
 		Block = Block,
@@ -544,6 +557,8 @@ construct_runtime!(
 		Fees: fees::{Module, Call, Storage, Event<T>, Config<T>},
 		Nfts: nfts::{Module, Call, Event<T>},
 		MultiAccount: substrate_pallet_multi_account::{Module, Call, Storage, Event<T>, Config<T>},
+		Bridge: bridge::{Module, Call, Storage, Event<T>, Config<T>},
+		Example: example_pallet::{Module, Call, Event<T>},
 	}
 );
 
