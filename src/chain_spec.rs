@@ -126,6 +126,7 @@ pub fn testnet_genesis(
 	// StashId, ControllerId, GrandpaId, BabeId, ImOnlineId, AuthorityDiscoveryId
 	initial_authorities: Vec<(AccountId, AccountId, GrandpaId, BabeId, ImOnlineId, AuthorityDiscoveryId)>,
     endowed_accounts: Option<Vec<AccountId>>,
+	initial_relayers: Option<Vec<AccountId>>,
 ) -> GenesisConfig {
     let mut endowed_accounts: Vec<AccountId> = endowed_accounts.unwrap_or_else(|| {
 		vec![
@@ -152,6 +153,8 @@ pub fn testnet_genesis(
     const STASH: Balance = 1_000_000 * RAD;
     let endowment: Balance = (INITIAL_SUPPLY - STASH * (initial_authorities.len() as Balance)) /
         (num_endowed_accounts as Balance);
+
+	let initial_relayers = initial_relayers.unwrap_or_else(|| vec![]);
 
     GenesisConfig {
         frame_system: Some(SystemConfig {
@@ -232,8 +235,8 @@ pub fn testnet_genesis(
             )],
         }),
 		bridge: Some(BridgeConfig {
-			endowed: get_account_id_from_seed::<sr25519::Public>("Alice"),
-			relayers: endowed_accounts,
+			chain_id: 1,
+			relayers: initial_relayers,
 			relayer_threshold: 2,
 		}),
     }
@@ -254,6 +257,10 @@ fn development_config_genesis() -> GenesisConfig {
 			get_authority_keys_from_seed("Alice"),
 		],
 		None,
+		Some(vec![
+			get_account_id_from_seed::<sr25519::Public>("Alice"),
+			get_account_id_from_seed::<sr25519::Public>("Bob"),
+		])
 	)
 }
 
@@ -277,6 +284,7 @@ fn local_testnet_genesis() -> GenesisConfig {
 			get_authority_keys_from_seed("Alice"),
 			get_authority_keys_from_seed("Bob"),
 		],
+		None,
 		None,
 	)
 }
@@ -320,6 +328,7 @@ fn fulvous_genesis() -> GenesisConfig {
             hex!["9efc9f132428d21268710181fe4315e1a02d838e0e5239fe45599f54310a7c34"].into(),
             hex!["c405224448dcd4259816b09cfedbd8df0e6796b16286ea18efa2d6343da5992e"].into(),
         ]),
+		None,
 	)
 }
 
@@ -356,6 +365,7 @@ pub(crate) mod tests {
 			vec![
 				get_authority_keys_from_seed("Alice"),
 			],
+			None,
 			None,
 		)
 	}

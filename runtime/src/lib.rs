@@ -526,7 +526,7 @@ impl bridge::Trait for Runtime {
 
 impl example_pallet::Trait for Runtime {
 	type Event = Event;
-	type BridgeOrigin = chainbridge::EnsureBridge<Runtime>;
+	type BridgeOrigin = bridge::EnsureBridge<Runtime>;
 }
 
 construct_runtime!(
